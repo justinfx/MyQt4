@@ -21,6 +21,7 @@ http://dl.dropbox.com/u/34613220/MyQt4/MyQt4.8.6-maya2012-x64-osx.pkg
 
 ### Notes about installer
 
+* OSX Requires XCode installed in order to compile and make a pkg
 * Installes a repaired pyuic4 as /usr/local/bin/myqt4
 * Copies pyrcc4 to /usr/local/bin/pyrcc4
         
