@@ -12,7 +12,17 @@ Maya 2012-x64
 
         git clone git://github.com/justinfx/MyQt4.git
         cd MyQt4/osx
-        make all
+        make
+
+### Hosted builds
+
+Latest OSX pkg build can be downloaded here:<br>
+http://dl.dropbox.com/u/34613220/MyQt4/MyQt4.8.6-maya2012-x64-osx.pkg
+
+### Notes about installer
+
+* Installes a repaired pyuic4 as /usr/local/bin/myqt4
+* Copies pyrcc4 to /usr/local/bin/pyrcc4
         
 
         
