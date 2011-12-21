@@ -1,4 +1,3 @@
-
 TMPDIR=$(CURDIR)/BUILD
 INSTALLDIR=$(TMPDIR)/install
 PACKAGEDIR=$(TMPDIR)/package
@@ -7,8 +6,7 @@ MAYA_LOCATION=/Applications/Autodesk/maya2012/Maya.app/Contents
 MAYAPY=$(MAYA_LOCATION)/bin/mayapy
 
 XDATE=$(shell date +%Y%m%d)
-JOBS=8
-
+JOBS=$(shell sysctl hw.physicalcpu | cut -d : -f 2)
 
 SRC_PYQT_NAME=PyQt-mac-gpl-4.8.6
 SRC_PYQT=http://distfiles.macports.org/python/PyQt-mac-gpl-4.8.6.tar.gz
@@ -41,8 +39,8 @@ prepare:
 	mkdir -p $(INSTALLDIR)
 
 .PHONY: fetch
+
 fetch: 
-	
 	cd $(TMPDIR) && \
 	if [ -e "qt-adsk-4.7.1" ]; then \
 		echo " *** qt-adsk-4.7.1 is already present"; \
@@ -53,7 +51,7 @@ fetch:
 		mv Qt-4.7.1-Maya/qt-adsk-4.7.1.tgz . ; \
 		tar zxf qt-adsk-4.7.1.tgz; \
 	fi 
-	
+
 	cd $(TMPDIR) && \
 	for component in $(SRC_SIP) $(SRC_PYQT); do \
 		f=`echo $$component | awk -F/ '{print $$NF}'`; \
@@ -71,10 +69,11 @@ fetch:
 qt: fetch
 	@echo "\n *** Working on Qt"
 	cd $(TMPDIR)/$(SRC_QT_NAME) && \
-	yes | ./configure -opensource -silent -arch x86_64 -debug-and-release -no-phonon \
+	yes | ./configure -opensource -silent -fast -arch x86_64 -debug-and-release -no-phonon \
 		-no-phonon-backend -no-qt3support -no-webkit -nomake docs -no-libmng -no-accessibility \
 		-nomake examples -nomake demos -nomake translations -no-rpath -no-framework -no-sql-sqlite \
 		-no-declarative -no-javascript-jit -no-scripttools -no-script -no-declarative-debug \
+		-sdk /Developer/SDKs/MacOSX10.6.sdk \
 		-prefix $(INSTALLDIR) && \
 	\
 	cd $(TMPDIR)/$(SRC_QT_NAME) && make -j$(JOBS) && make install;
@@ -122,12 +121,12 @@ pyqt-fixes:
 		-name "*.so" -exec install_name_tool \
 		-change libQt$${mod}.4.dylib @executable_path/Qt$${mod} {} \;; \
 	done
-	
+
 	@echo "$$MYQT4_TOOL" > $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/bin/pyuic4 && \
 	chmod a+x $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/bin/pyuic4 && \
 	mkdir -p $(INSTALLDIR)/usr/local/bin && \
 	cp $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/bin/pyuic4 $(INSTALLDIR)/usr/local/bin/myuic4
-	
+
 	cp $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/bin/pyrcc4 $(INSTALLDIR)/usr/local/bin
 
 
