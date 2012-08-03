@@ -2,22 +2,22 @@ TMPDIR=$(CURDIR)/BUILD
 INSTALLDIR=$(TMPDIR)/install
 PACKAGEDIR=$(TMPDIR)/package
 
-MAYA_LOCATION=/Applications/Autodesk/maya2013/Maya.app/Contents
+MAYA_LOCATION=/Applications/Autodesk/maya2011/Maya.app/Contents
 MAYAPY=$(MAYA_LOCATION)/bin/mayapy
 
 XDATE=$(shell date +%Y%m%d)
 JOBS=$(shell sysctl hw.physicalcpu | cut -d : -f 2)
 
-SRC_PYQT_NAME=PyQt-mac-gpl-4.9.4
-SRC_PYQT=https://dl.dropbox.com/u/34613220/MyQt4/src/PyQt-mac-gpl-4.9.4.tar.gz
+SRC_PYQT_NAME=PyQt-mac-gpl-4.7.4
+SRC_PYQT=https://dl.dropbox.com/u/34613220/MyQt4/src/PyQt-mac-gpl-4.7.4.tar.gz
 
-SRC_SIP_NAME=sip-4.13.3
-SRC_SIP=http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-4.13.3.tar.gz
+SRC_SIP_NAME=sip-4.10.3
+SRC_SIP=https://dl.dropbox.com/u/34613220/MyQt4/src/sip-4.10.3.tar.gz
 
-SRC_QT_NAME=qt-adsk-4.7.1
-SRC_QT=https://dl.dropbox.com/u/34613220/MyQt4/src/Qt-4.7.1-Modified_for_Maya.zip
+SRC_QT_NAME=qt-mac-opensource-src-4.5.3
+SRC_QT=https://dl.dropbox.com/u/34613220/MyQt4/src/qt-mac-opensource-src-4.5.3.tar.gz
 
-PKG_FILE=MyQt4.9.4-maya2013-x64-osx-$(XDATE).pkg
+PKG_FILE=MyQt4.7.4-maya2011-x64-osx-$(XDATE).pkg
 
 # to make sure PyQt4 picks up our sip install
 export PYTHONPATH:= $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/lib/python2.6/site-packages:$(PATH)
@@ -35,27 +35,23 @@ build-package: build
 
 .PHONY: prepare
 prepare:
-	if [ -e "$(INSTALLDIR)" ]; \
-		then rm -rf $(INSTALLDIR); \
-	fi; 
-	mkdir -p $(INSTALLDIR)
+	-mkdir -p $(INSTALLDIR)
 
 .PHONY: fetch
 
+.PHONY: clean
+clean:
+	if [ -e "$(INSTALLDIR)" ]; \
+		then rm -rf $(INSTALLDIR); \
+	fi; 
+
+	if [ -e "$(PACKAGEDIR)" ]; \
+		then rm -rf $(PACKAGEDIR); \
+	fi; 
+	
 fetch: prepare
 	cd $(TMPDIR) && \
-	if [ -e "$(SRC_QT_NAME)" ]; then \
-		echo " *** $(SRC_QT_NAME) is already present"; \
-	else \
-		echo " *** Downloading Qt Modified for Maya"; \
-		curl -o $(SRC_QT_NAME).zip $(SRC_QT); \
-		unzip $(SRC_QT_NAME).zip; \
-		mv Qt-4.7.1-Maya/$(SRC_QT_NAME).tgz . ; \
-		tar zxf $(SRC_QT_NAME).tgz; \
-	fi 
-
-	cd $(TMPDIR) && \
-	for component in $(SRC_SIP) $(SRC_PYQT); do \
+	for component in $(SRC_QT) $(SRC_SIP) $(SRC_PYQT); do \
 		f=`echo $$component | awk -F/ '{print $$NF}'`; \
 		name=`echo $$f | sed 's/.tar.gz$$//'`; \
 		if [ -e $$name ]; then \
@@ -71,12 +67,10 @@ fetch: prepare
 qt: fetch
 	@echo "\n *** Working on Qt"
 	cd $(TMPDIR)/$(SRC_QT_NAME) && \
-	yes | ./configure -opensource -silent -fast -arch x86_64 -debug-and-release -no-phonon \
-		-no-phonon-backend -no-qt3support -no-webkit -nomake docs -no-libmng -no-accessibility \
-		-nomake examples -nomake demos -nomake translations -no-rpath -no-framework -no-sql-sqlite \
-		-no-declarative -no-javascript-jit -no-scripttools -no-script -no-declarative-debug \
-		-sdk /Developer/SDKs/MacOSX10.6.sdk \
-		-prefix $(INSTALLDIR) && \
+	yes yes | ./configure -opensource -silent -fast -arch x86_64 -cocoa -arch x86_64 \
+	-debug-and-release -no-phonon -no-phonon-backend -no-qt3support -no-webkit -nomake docs \
+	-nomake examples -nomake demos -nomake translations -no-rpath -no-framework	\
+	-prefix $(INSTALLDIR) && \
 	\
 	cd $(TMPDIR)/$(SRC_QT_NAME) && make -j$(JOBS) && make install;
 
@@ -150,7 +144,7 @@ package:
 	echo " *** Creating pkg" && \
 	rm -f $$PKG_FILE && \
 	sudo chown -R root:admin $(PACKAGEDIR) && \
-	/Developer/usr/bin/packagemaker --root $(PACKAGEDIR) --out $$PKG_FILE --id com.justinfx.MyQt4 --version 4.9.4 --title MyQt4 --install-to / --domain system --target 10.5 --filter "\.DS_Store" --root-volume-only && \
+	/Developer/usr/bin/packagemaker --root $(PACKAGEDIR) --out $$PKG_FILE --id com.justinfx.MyQt4 --version 4.7.4 --title MyQt4 --install-to / --domain system --target 10.5 --filter "\.DS_Store" --root-volume-only && \
 	\
 	xar -xf $$PKG_FILE Bom && \
 	lsbom package.pkg/Bom && \
@@ -162,7 +156,7 @@ package:
 
 define MYQT4_TOOL
 #!/bin/sh
-MAYA_LOCATION=/Applications/Autodesk/maya2013/Maya.app/Contents
+MAYA_LOCATION=/Applications/Autodesk/maya2011/Maya.app/Contents
 exec ${MAYA_LOCATION}/bin/mayapyw ${MAYA_LOCATION}/Frameworks/Python.framework/Versions/Current/lib/python2.6/site-packages/PyQt4/uic/pyuic.py $${1+"$$@"}
 endef
 

@@ -8,16 +8,16 @@ MAYAPY=$(MAYA_LOCATION)/bin/mayapy
 XDATE=$(shell date +%Y%m%d)
 JOBS=$(shell sysctl hw.physicalcpu | cut -d : -f 2)
 
-SRC_PYQT_NAME=PyQt-mac-gpl-4.8.6
-SRC_PYQT=http://distfiles.macports.org/python/PyQt-mac-gpl-4.8.6.tar.gz
+SRC_PYQT_NAME=PyQt-mac-gpl-4.9.4
+SRC_PYQT=https://dl.dropbox.com/u/34613220/MyQt4/src/PyQt-mac-gpl-4.9.4.tar.gz
 
-SRC_SIP_NAME=sip-4.12.4
-SRC_SIP=http://tx-us.lunar-linux.org/lunar/mirrors/sip-4.12.4.tar.gz
+SRC_SIP_NAME=sip-4.13.3
+SRC_SIP=http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-4.13.3.tar.gz
 
 SRC_QT_NAME=qt-adsk-4.7.1
-SRC_QT=http://images.autodesk.com/adsk/files/Qt-4.7.1-Modified_for_Maya.zip
+SRC_QT=https://dl.dropbox.com/u/34613220/MyQt4/src/Qt-4.7.1-Modified_for_Maya.zip
 
-PKG_FILE=MyQt4.8.6-maya2012-x64-osx-$(XDATE).pkg
+PKG_FILE=MyQt4.9.4-maya2012-x64-osx-$(XDATE).pkg
 
 # to make sure PyQt4 picks up our sip install
 export PYTHONPATH:= $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/lib/python2.6/site-packages:$(PATH)
@@ -35,21 +35,24 @@ build-package: build
 
 .PHONY: prepare
 prepare:
-	-rm -rf $(INSTALLDIR); \
+	if [ -e "$(INSTALLDIR)" ]; \
+		then rm -rf $(INSTALLDIR); \
+	fi; 
+	
 	mkdir -p $(INSTALLDIR)
 
 .PHONY: fetch
 
-fetch: 
+fetch: prepare
 	cd $(TMPDIR) && \
-	if [ -e "qt-adsk-4.7.1" ]; then \
-		echo " *** qt-adsk-4.7.1 is already present"; \
+	if [ -e "$(SRC_QT_NAME)" ]; then \
+		echo " *** $(SRC_QT_NAME) is already present"; \
 	else \
 		echo " *** Downloading Qt Modified for Maya"; \
-		curl -O $(SRC_QT); \
-		unzip Qt-4.7.1-Modified_for_Maya.zip; \
-		mv Qt-4.7.1-Maya/qt-adsk-4.7.1.tgz . ; \
-		tar zxf qt-adsk-4.7.1.tgz; \
+		curl -o $(SRC_QT_NAME).zip $(SRC_QT); \
+		unzip $(SRC_QT_NAME).zip; \
+		mv Qt-4.7.1-Maya/$(SRC_QT_NAME).tgz . ; \
+		tar zxf $(SRC_QT_NAME).tgz; \
 	fi 
 
 	cd $(TMPDIR) && \
@@ -127,7 +130,7 @@ pyqt-fixes:
 	mkdir -p $(INSTALLDIR)/usr/local/bin && \
 	cp $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/bin/pyuic4 $(INSTALLDIR)/usr/local/bin/myuic4
 
-	cp $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/bin/pyrcc4 $(INSTALLDIR)/usr/local/bin
+	cp $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/bin/pyrcc4 $(INSTALLDIR)/usr/local/bin/myrcc4
 
 
 package:
@@ -148,7 +151,7 @@ package:
 	echo " *** Creating pkg" && \
 	rm -f $$PKG_FILE && \
 	sudo chown -R root:admin $(PACKAGEDIR) && \
-	/Developer/usr/bin/packagemaker --root $(PACKAGEDIR) --out $$PKG_FILE --id com.justinfx.MyQt4 --version 4.8.6 --title MyQt4 --install-to / --domain system --target 10.5 --filter "\.DS_Store" --root-volume-only && \
+	/Developer/usr/bin/packagemaker --root $(PACKAGEDIR) --out $$PKG_FILE --id com.justinfx.MyQt4 --version 4.9.4 --title MyQt4 --install-to / --domain system --target 10.5 --filter "\.DS_Store" --root-volume-only && \
 	\
 	xar -xf $$PKG_FILE Bom && \
 	lsbom package.pkg/Bom && \
