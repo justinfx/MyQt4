@@ -16,15 +16,18 @@ This will produce a .pkg that can be distributed and installed, for Maya. It ass
 ### Hosted builds
 
 Latest OSX pkg build can be downloaded here:<br>
-http://dl.dropbox.com/u/34613220/MyQt4/MyQt4.8.6-maya2012-x64-osx.pkg<br>
-http://dl.dropbox.com/u/34613220/MyQt4/MyQt4.8.6-maya2012-x64-osx-10.7.pkg<br>
-http://dl.dropbox.com/u/34613220/MyQt4/MyQt4.8.6-maya2013-x64-osx-10.7.pkg<br>
+[MyQt4.7.4-maya2011-x64-osx-10.6.pkg](https://dl.dropbox.com/u/34613220/MyQt4/MyQt4.7.4-maya2011-x64-osx-10.6.pkg)<br>
+[MyQt4.9.4-maya2012-x64-osx-10.6.pkg](https://dl.dropbox.com/u/34613220/MyQt4/MyQt4.9.4-maya2012-x64-osx-10.6.pkg)<br>
+[MyQt4.9.4-maya2013-x64-osx-10.6.pkg](https://dl.dropbox.com/u/34613220/MyQt4/MyQt4.9.4-maya2013-x64-osx-10.6.pkg)<br>
+[MyQt4.8.6-maya2012-x64-osx-10.7.pkg](http://dl.dropbox.com/u/34613220/MyQt4/MyQt4.8.6-maya2012-x64-osx-10.7.pkg)<br>
+[MyQt4.8.6-maya2013-x64-osx-10.7.pkg](http://dl.dropbox.com/u/34613220/MyQt4/MyQt4.8.6-maya2013-x64-osx-10.7.pkg)<br>
+
 
 ### Notes about installer
 
 * OSX Requires XCode installed in order to compile and make a pkg
-* Installes a repaired pyuic4 as /usr/local/bin/myqt4
-* Copies pyrcc4 to /usr/local/bin/pyrcc4
+* Installes a repaired pyuic4 as /usr/local/bin/myuic4
+* Copies pyrcc4 to /usr/local/bin/myrcc4
         
 
         
