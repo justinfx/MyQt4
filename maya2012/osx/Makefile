@@ -73,7 +73,7 @@ qt: fetch
 	@echo "\n *** Working on Qt"
 	cd $(TMPDIR)/$(SRC_QT_NAME) && \
 	yes | ./configure -opensource -silent -fast -arch x86_64 -debug-and-release -no-phonon \
-		-no-phonon-backend -no-qt3support -no-webkit -nomake docs -no-libmng -no-accessibility \
+		-no-phonon-backend -no-qt3support -nomake docs -no-libmng -no-accessibility \
 		-nomake examples -nomake demos -nomake translations -no-rpath -no-framework -no-sql-sqlite \
 		-no-declarative -no-javascript-jit -no-scripttools -no-script -no-declarative-debug \
 		-sdk /Developer/SDKs/MacOSX10.6.sdk \
@@ -119,7 +119,7 @@ pyqt: qt $(BUILD-SIP)
 
 .PHONY: pyqt-fixes
 pyqt-fixes:
-	for mod in Core Gui Svg OpenGL Xml; do \
+	for mod in `find $(MAYA_LOCATION)/MacOS -type f -name "Qt*" | awk -F/ '{print $$NF}'`; do \
 		find $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/lib/python2.6/site-packages/PyQt4 \
 		-name "*.so" -exec install_name_tool \
 		-change libQt$${mod}.4.dylib @executable_path/Qt$${mod} {} \;; \
