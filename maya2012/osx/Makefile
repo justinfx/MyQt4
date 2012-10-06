@@ -122,7 +122,7 @@ pyqt-fixes:
 	for mod in `find $(MAYA_LOCATION)/MacOS -type f -name "Qt*" | awk -F/ '{print $$NF}'`; do \
 		find $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/lib/python2.6/site-packages/PyQt4 \
 		-name "*.so" -exec install_name_tool \
-		-change libQt$${mod}.4.dylib @executable_path/Qt$${mod} {} \;; \
+		-change lib$${mod}.4.dylib @executable_path/$${mod} {} \;; \
 	done
 
 	@echo "$$MYQT4_TOOL" > $(INSTALLDIR)/Frameworks/Python.framework/Versions/Current/bin/pyuic4 && \
