@@ -12,7 +12,7 @@ SRC_PYQT_NAME=PyQt-mac-gpl-4.9.4
 SRC_PYQT=https://dl.dropbox.com/u/34613220/MyQt4/src/PyQt-mac-gpl-4.9.4.tar.gz
 
 SRC_SIP_NAME=sip-4.13.3
-SRC_SIP=http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-4.13.3.tar.gz
+SRC_SIP=http://dl.dropbox.com/u/34613220/MyQt4/src/sip-4.13.3.tar.gz
 
 SRC_QT_NAME=qt-adsk-4.7.1
 SRC_QT=https://dl.dropbox.com/u/34613220/MyQt4/src/Qt-4.7.1-Modified_for_Maya.zip
